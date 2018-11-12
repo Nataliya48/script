@@ -9,8 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $control->switcher();
     echo '\/';
 }
-?>
 
-<form method="post">
-    <input type="submit" value="Свитчер">
-</form>
+echo '<form method="post">
+        <input type="submit" value="' . $control->getButtonTitle() . '">
+     </form>';
