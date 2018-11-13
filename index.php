@@ -12,4 +12,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 echo '<form method="post">
         <input type="submit" value="' . $control->getButtonTitle() . '">
-     </form>';
+    </form>';
+
