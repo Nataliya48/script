@@ -102,16 +102,16 @@ class Control {
 
     private function getTotal($file) {
         $result = [
-            'table' => ['Start', 'End', 'Total'],
+            'table' => [['Start', 'End', 'Total']],
             'sum' => 0,
         ];
         $lines = explode("\n", trim(file_get_contents($file)));
         foreach ($lines as $line) {
             $cols = explode(',', trim($line));
-            foreach ($cols as $key => $col){
-                $result['table'][$key] = $col;
+            if (count($cols) == 3) {
+                $result['table'][] = $cols;
+                $result['sum'] += $this->timeToSeconds($cols[2]);
             }
-            $result['sum'] += $this->timeToSeconds($cols[2]);
         }
         $result['sum'] = gmdate('H:i:s', $result['sum']);
         return $result;
