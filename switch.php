@@ -15,9 +15,12 @@ class Control {
 
     const WORK  = 'work';
     const REST  = 'rest';
+    var $statusFile;
+    var $workFile;
+    var $restFile;
 
     private function timeToSeconds($time) {
-        return strtotime("1970-01-01 {$time} UTC") + 3 * 60 * 60;
+        return strtotime("1970-01-01 {$time} UTC");
     }
 
     private function timeDiff($first, $second) {
@@ -27,47 +30,55 @@ class Control {
 
     public function __construct($storagePath) {
 
-        $day = gmdate('d.m');
+        $day = date('d.m');
 
         if (!is_dir($storagePath . '/' . $day)) {
-            mkdir($storagePath . '/' . $day, 0777);
+            mkdir($storagePath . '/' . $day);
+            chmod($storagePath . '/' . $day,0777);
         }
         $this->path = $storagePath . '/' . $day . '/';
+        $this->statusFile = $this->path . 'status.csv';
+        $this->workFile = $this->path . 'work.csv';
+        $this->restFile = $this->path . 'rest.csv';
 
-        if (!is_writable($this->path . 'status.csv')){
-            file_put_contents($this->path . 'status.csv', ''); //rest\work
+        if (!is_writable($this->statusFile)){
+            file_put_contents($this->statusFile, ''); //rest\work
+            chmod($this->statusFile,0777);
         }
-        if (!is_writable($this->path . 'work.csv')){
-            file_put_contents($this->path . 'work.csv', '');
+        if (!is_writable($this->workFile)){
+            file_put_contents($this->workFile, '');
+            chmod($this->workFile,0777);
         }
-        if (!is_writable($this->path . 'rest.csv')){
-            file_put_contents($this->path . 'rest.csv', '');
+        if (!is_writable($this->restFile)){
+            file_put_contents($this->restFile, '');
+            chmod($this->restFile,0777);
         }
         $this->loadStatus();
 
     }
 
     private function loadStatus() {
-        $this->status = trim(file_get_contents($this->path . 'status.csv'));
+        $this->status = trim(file_get_contents($this->statusFile));
         $this->status = explode(',', $this->status);
     }
 
     public function switcher() {
 
-        $time = gmdate('H:i:s');
+        $time = date('H:i:s');
 
         if (count($this->status) == 2) {
+            var_dump(array('current' => $time, 'fromFile' => $this->status[1], 'result' => $this->timeDiff($time, $this->status[1])));
             if ($this->status[0] === self::WORK) {
-                file_put_contents($this->path . 'work.csv', $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
-                file_put_contents($this->path . 'status.csv', self::REST . ',' . $time);
+                file_put_contents($this->workFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+                file_put_contents($this->statusFile, self::REST . ',' . $time);
             } elseif ($this->status[0] === self::REST) {
-                if (($this->timeToSeconds(gmdate('H:i:s')) - $this->timeToSeconds($this->status[1])) > 120) {
-                    file_put_contents($this->path . 'rest.csv', $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+                if (($this->timeToSeconds(date('H:i:s')) - $this->timeToSeconds($this->status[1])) > 120) {
+                    file_put_contents($this->restFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
                 }
-                file_put_contents($this->path . 'status.csv', self::WORK . ',' . $time);
+                file_put_contents($this->statusFile, self::WORK . ',' . $time);
             }
         } else {
-            file_put_contents($this->path . 'status.csv', self::WORK . ',' . $time);
+            file_put_contents($this->statusFile, self::WORK . ',' . $time);
         }
         $this->loadStatus();
 
@@ -81,8 +92,30 @@ class Control {
         }
     }
 
-    public function report() {
-        file_get_contents();
+    public function getWorkTotal() {
+        return $this->getTotal($this->workFile);
     }
+
+    public function getRestTotal() {
+        return $this->getTotal($this->restFile);
+    }
+
+    private function getTotal($file) {
+        $result = [
+            'table' => ['Start', 'End', 'Total'],
+            'sum' => 0,
+        ];
+        $lines = explode("\n", trim(file_get_contents($file)));
+        foreach ($lines as $line) {
+            $cols = explode(',', trim($line));
+            foreach ($cols as $key => $col){
+                $result['table'][$key] = $col;
+            }
+            $result['sum'] += $this->timeToSeconds($cols[2]);
+        }
+        $result['sum'] = gmdate('H:i:s', $result['sum']);
+        return $result;
+    }
+
 }
 
