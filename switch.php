@@ -67,7 +67,6 @@ class Control {
         $time = date('H:i:s');
 
         if (count($this->status) == 2) {
-            var_dump(array('current' => $time, 'fromFile' => $this->status[1], 'result' => $this->timeDiff($time, $this->status[1])));
             if ($this->status[0] === self::WORK) {
                 file_put_contents($this->workFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
                 file_put_contents($this->statusFile, self::REST . ',' . $time);

@@ -7,7 +7,6 @@ $control = new Control("/home/nata/Рабочий стол/Control"); //Дире
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $control->switcher();
-    echo '\/';
 }
 
 $work = $control->getWorkTotal();
