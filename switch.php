@@ -73,8 +73,10 @@ class Control {
             } elseif ($this->status[0] === self::REST) {
                 if (($this->timeToSeconds(date('H:i:s')) - $this->timeToSeconds($this->status[1])) > 120) {
                     file_put_contents($this->restFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+                    file_put_contents($this->statusFile, self::WORK . ',' . $time);
+                } else {
+                    file_put_contents($this->statusFile, self::WORK . ',' . $this->status[1]);
                 }
-                file_put_contents($this->statusFile, self::WORK . ',' . $time);
             }
         } else {
             file_put_contents($this->statusFile, self::WORK . ',' . $time);
