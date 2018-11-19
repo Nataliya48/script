@@ -1,7 +1,4 @@
 <link rel="stylesheet" href="style.css" type="text/css"/>
-<form method="post">
-    <input type="submit" value="<?= $control->getButtonTitle() ?>">
-</form>
 
 <table>
     <tr>
@@ -9,40 +6,42 @@
         <th>End</th>
         <th>Total</th>
     </tr>
-    <?php foreach($work['table'] as $row):?>
+    <?php foreach ($work['table'] as $row): ?>
         <tr>
-            <?php foreach($row as $col):?>
+            <?php foreach ($row as $col): ?>
                 <td>
                     <?= $col; ?>
                 </td>
             <?php endforeach; ?>
         </tr>
     <?php endforeach; ?>
-    <tr>
+    <tr class="total">
         <td>Total:</td>
-        <td><?= $work['sum'] ?></td>
+        <td colspan="2" align="center"><?= $work['sum'] ?></td>
     </tr>
 </table>
 
-<div>
-    <table>
+<table>
+    <tr>
+        <th>Start</th>
+        <th>End</th>
+        <th>Total</th>
+    </tr>
+    <?php foreach ($rest['table'] as $row): ?>
         <tr>
-            <th>Start</th>
-            <th>End</th>
-            <th>Total</th>
+            <?php foreach ($row as $col): ?>
+                <td>
+                    <?= $col; ?>
+                </td>
+            <?php endforeach; ?>
         </tr>
-        <?php foreach($rest['table'] as $row):?>
-            <tr>
-                <?php foreach($row as $col):?>
-                    <td>
-                        <?= $col; ?>
-                    </td>
-                <?php endforeach; ?>
-            </tr>
-        <?php endforeach; ?>
-        <tr>
-            <td>Total:</td>
-            <td><?= $rest['sum'] ?></td>
-        </tr>
-    </table>
-</div>
+    <?php endforeach; ?>
+    <tr class="total">
+        <td>Total:</td>
+        <td colspan="2" align="center"><?= $rest['sum'] ?></td>
+    </tr>
+</table>
+
+<form method="post" class="form">
+    <input type="submit" value="<?= $control->getButtonTitle() ?>">
+</form>

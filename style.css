@@ -1,17 +1,34 @@
 table {
     border-collapse: collapse;
+    float: left;
+    margin-left: 25px;
 }
 
 table, th, td {
-    border: 1px solid black;
-    padding: 5px;
-    font-size: 13px;
+    border: 2px solid white;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 7px;
 }
 
-table {
-    float: left;
+th {
+    background: #d0e3f7;
 }
 
-div {
-    float:left;
+.total td {
+    background: #d0e3f7;
+}
+
+tr:nth-child(2n) {
+    background: #f0f8ff;
+}
+
+tr:nth-child(2n+1) {
+    background: #fff;
+}
+
+.form {
+    margin-left: 265px;
+    padding-top: 25px;
+    clear: both;
 }
