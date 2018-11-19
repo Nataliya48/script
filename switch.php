@@ -86,9 +86,8 @@ class Control
                 } else {
                     $workTotal = explode("\n", trim(file_get_contents($this->workFile)));
                     $start = explode(',', $workTotal[count($workTotal) - 1])[0];
-                    //echo $start;exit;
                     unset($workTotal[count($workTotal) - 1]);
-                    file_put_contents($this->workFile, implode("\n", $workTotal));
+                    file_put_contents($this->workFile, implode("\n", $workTotal) . "\n");
                     file_put_contents($this->statusFile, self::WORK . ',' . $start);
                 }
             }
