@@ -4,6 +4,11 @@
 </form>
 
 <table>
+    <tr>
+        <th>Start</th>
+        <th>End</th>
+        <th>Total</th>
+    </tr>
     <?php foreach($work['table'] as $row):?>
         <tr>
             <?php foreach($row as $col):?>
@@ -21,6 +26,11 @@
 
 <div>
     <table>
+        <tr>
+            <th>Start</th>
+            <th>End</th>
+            <th>Total</th>
+        </tr>
         <?php foreach($rest['table'] as $row):?>
             <tr>
                 <?php foreach($row as $col):?>
