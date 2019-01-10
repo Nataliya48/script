@@ -67,10 +67,6 @@ class Control
         $this->status = explode(',', $this->status);
     }
 
-    /** Если перерыв менее 2 минут, этот перерыв удаляется и не учитывается нигде.
-     * Необходимо удалять строку из файла work и сохранить оттуда первое значение.
-     * Если перерыв меньше двух минут то для записи в work хранить самое первое это значение.
-     */
     public function switcher()
     {
         $time = date('H:i:s');
@@ -131,9 +127,26 @@ class Control
                 $result['sum'] += $this->timeToSeconds($cols[2]);
             }
         }
+        $result['sum'] += $this->timeToSeconds($this->lastWorkTime());
         $result['sum'] = gmdate('H:i:s', $result['sum']);
         return $result;
     }
+
+    public function lastWorkTime()
+    {
+        if (count($this->status) == 2 && $this->status[0] === self::WORK) {
+            return $this->timeDiff(date('H:i:s'), $this->status[1]);
+        }
+    }
+
+    public function getDateForReport()
+    {
+        //var_dump($this->path);
+        //$this->getTotal("");
+    }
+
+    //для отчета нужно получить с формы дату и обрезать ее до даты и месяца
+    //после того как получили дату вызываем стандартные методы печати отчета
 
 }
 
