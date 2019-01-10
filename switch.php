@@ -127,14 +127,20 @@ class Control
                 $result['sum'] += $this->timeToSeconds($cols[2]);
             }
         }
-        $result['sum'] += $this->timeToSeconds($this->lastWorkTime());
+        var_dump(array($this->status[0], gmdate('H:i:s', $this->timeToSeconds($this->lastWorkTime()))));
+        if ($this->workFile) {
+            $result['sum'] += $this->timeToSeconds($this->lastWorkTime());
+        }
         $result['sum'] = gmdate('H:i:s', $result['sum']);
         return $result;
     }
+    //тут нужна проверка, с какого файла считывается инфа
+    //так как текущее состояние в файле всегда рабочее
 
     public function lastWorkTime()
     {
-        if (count($this->status) == 2 && $this->status[0] === self::WORK) {
+        //if (count($this->status) == 2 && $this->status[0] === self::WORK) {
+        if ($this->workFile) {
             return $this->timeDiff(date('H:i:s'), $this->status[1]);
         }
     }
