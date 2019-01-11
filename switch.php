@@ -105,15 +105,15 @@ class Control
 
     public function getWorkTotal()
     {
-        return $this->getTotal($this->workFile);
+        return $this->getTotal($this->workFile, self::WORK);
     }
 
     public function getRestTotal()
     {
-        return $this->getTotal($this->restFile);
+        return $this->getTotal($this->restFile, self::REST);
     }
 
-    private function getTotal($file)
+    private function getTotal($file, $type)
     {
         $result = [
             'table' => [],
@@ -127,22 +127,16 @@ class Control
                 $result['sum'] += $this->timeToSeconds($cols[2]);
             }
         }
-        var_dump(array($this->status[0], gmdate('H:i:s', $this->timeToSeconds($this->lastWorkTime()))));
-        if ($this->workFile) {
-            $result['sum'] += $this->timeToSeconds($this->lastWorkTime());
+        if ($type === $this->status[0]) {
+            $result['sum'] += $this->timeToSeconds($this->lastPeriodTime());
         }
         $result['sum'] = gmdate('H:i:s', $result['sum']);
         return $result;
     }
-    //тут нужна проверка, с какого файла считывается инфа
-    //так как текущее состояние в файле всегда рабочее
 
-    public function lastWorkTime()
+    public function lastPeriodTime()
     {
-        //if (count($this->status) == 2 && $this->status[0] === self::WORK) {
-        if ($this->workFile) {
-            return $this->timeDiff(date('H:i:s'), $this->status[1]);
-        }
+        return $this->timeDiff(date('H:i:s'), $this->status[1]);
     }
 
     public function getDateForReport()

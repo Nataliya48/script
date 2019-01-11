@@ -14,7 +14,7 @@ $rest = $control->getRestTotal();
 //вызываю метод, который возвращает это время и суммируем с временем, которое возвращает сумму времени в работе
 
 
-$lwt = $control->lastWorkTime();
-//$control->getDateForReport();
+$lwt = $control->lastPeriodTime();
+//$control->getWorkTotal();
 
 include 'template.php';
