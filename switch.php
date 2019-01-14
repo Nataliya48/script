@@ -16,9 +16,9 @@ class Control
 
     const WORK = 'work';
     const REST = 'rest';
-    var $statusFile;
-    var $workFile;
-    var $restFile;
+    private $statusFile;
+    private $workFile;
+    private $restFile;
 
     private function timeToSeconds($time)
     {
@@ -137,6 +137,11 @@ class Control
     public function lastPeriodTime()
     {
         return $this->timeDiff(date('H:i:s'), $this->status[1]);
+    }
+
+    public function getStatusTime()
+    {
+        return $this->status[1];
     }
 
     public function getDateForReport()

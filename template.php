@@ -23,7 +23,7 @@
             </tr>
         <?php endforeach; ?>
         <tr>
-            <td><?= $statusTime[1] ?></td>
+            <td><?= $statusTime ?></td>
             <td><?= date('H:i:s'); ?></td>
             <td><?= $lpt ?></td>
         </tr>

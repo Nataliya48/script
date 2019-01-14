@@ -11,6 +11,6 @@ $work = $control->getWorkTotal();
 $rest = $control->getRestTotal();
 
 $lpt = $control->lastPeriodTime();
-$statusTime = explode(",", file_get_contents($control->statusFile));
+$statusTime = $control->getStatusTime();
 
 include 'template.php';
