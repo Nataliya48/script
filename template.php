@@ -22,11 +22,7 @@
                 <?php endforeach; ?>
             </tr>
         <?php endforeach; ?>
-        <tr>
-            <td><?= $statusTime ?></td>
-            <td><?= date('H:i:s'); ?></td>
-            <td><?= $lpt ?></td>
-        </tr>
+
         <tr class="total">
             <td>Total:</td>
             <td colspan="2" align="center"><?= $work['sum'] ?></td>

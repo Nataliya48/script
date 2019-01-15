@@ -126,10 +126,20 @@ class Control
                 $result['table'][] = $cols;
                 $result['sum'] += $this->timeToSeconds($cols[2]);
             }
+            if ($type === $this->status[0]) {
+                $result['table'][][] = $this->status[1];
+                $result['table'][] = date('H:i:s');
+                $result['table'][] = $this->lastPeriodTime();
+                var_dump($result['table']);
+                $result['sum'] += $this->timeToSeconds($this->lastPeriodTime());
+                var_dump(array('table'=>$result['table'], 'sum'=>$result['sum']));
+            }
         }
-        if ($type === $this->status[0]) {
-            $result['sum'] += $this->timeToSeconds($this->lastPeriodTime());
-        }
+
+        // после формирования массива добавить в готовый для печати массив строку, с временем из даты до текущего
+        // (записать внутри условия)
+
+
         $result['sum'] = gmdate('H:i:s', $result['sum']);
         return $result;
     }
