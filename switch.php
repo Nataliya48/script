@@ -31,6 +31,14 @@ class Control
         return gmdate('H:i:s', abs($diff));
     }
 
+    private function createFileIfNotExists($filePath)
+    {
+        if (!file_exists($filePath)) {
+            file_put_contents($filePath, '');
+            chmod($filePath, 0777);
+        }
+    }
+
     public function __construct($storagePath)
     {
 
@@ -45,18 +53,9 @@ class Control
         $this->workFile = $this->path . 'work.csv';
         $this->restFile = $this->path . 'rest.csv';
 
-        if (!is_writable($this->statusFile)) {
-            file_put_contents($this->statusFile, ''); //rest\work
-            chmod($this->statusFile, 0777);
-        }
-        if (!is_writable($this->workFile)) {
-            file_put_contents($this->workFile, '');
-            chmod($this->workFile, 0777);
-        }
-        if (!is_writable($this->restFile)) {
-            file_put_contents($this->restFile, '');
-            chmod($this->restFile, 0777);
-        }
+        $this->createFileIfNotExists($this->statusFile);
+        $this->createFileIfNotExists($this->workFile);
+        $this->createFileIfNotExists($this->restFile);
         $this->loadStatus();
 
     }
@@ -158,5 +157,11 @@ class Control
     //для отчета нужно получить с формы дату и обрезать ее до даты и месяца
     //после того как получили дату вызываем стандартные методы печати отчета
 
+
+//если скрипт не может писать в папку - выбрасывать исключение
+//а в index.php его ловить
+//и обязательно сделай выбрасывание исключений, если папка не доступна на запись
+//http://php.net/manual/ru/language.exceptions.php
+//еще phpdoc создать надо
 }
 
