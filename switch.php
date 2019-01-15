@@ -125,14 +125,14 @@ class Control
                 $result['table'][] = $cols;
                 $result['sum'] += $this->timeToSeconds($cols[2]);
             }
-            if ($type === $this->status[0]) {
-                $result['table'][] = [
-                    $this->status[1],
-                    date('H:i:s'),
-                    $this->lastPeriodTime()
-                ];
-                $result['sum'] += $this->timeToSeconds($this->lastPeriodTime());
-            }
+        }
+        if ($type === $this->status[0]) {
+            $result['table'][] = [
+                $this->status[1],
+                date('H:i:s'),
+                $this->lastPeriodTime()
+            ];
+            $result['sum'] += $this->timeToSeconds($this->lastPeriodTime());
         }
         $result['sum'] = gmdate('H:i:s', $result['sum']);
         return $result;
