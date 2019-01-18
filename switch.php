@@ -37,6 +37,9 @@ class Control
             file_put_contents($filePath, '');
             chmod($filePath, 0777);
         }
+        if (!is_writable($filePath)) {
+            throw new Exception('File unavailable for writing: ' . $filePath);
+        }
     }
 
     public function __construct($storagePath)
@@ -49,10 +52,12 @@ class Control
             chmod($storagePath . '/' . $day, 0777);
         }
         $this->path = $storagePath . '/' . $day . '/';
+        if (!is_writable($storagePath . '/' . $day)) {
+            throw new Exception('Directory unavailable for writing: ' . $storagePath . '/' . $day);
+        }
         $this->statusFile = $this->path . 'status.csv';
         $this->workFile = $this->path . 'work.csv';
         $this->restFile = $this->path . 'rest.csv';
-
         $this->createFileIfNotExists($this->statusFile);
         $this->createFileIfNotExists($this->workFile);
         $this->createFileIfNotExists($this->restFile);
@@ -157,11 +162,6 @@ class Control
     //для отчета нужно получить с формы дату и обрезать ее до даты и месяца
     //после того как получили дату вызываем стандартные методы печати отчета
 
-
-//если скрипт не может писать в папку - выбрасывать исключение
-//а в index.php его ловить
-//и обязательно сделай выбрасывание исключений, если папка не доступна на запись
-//http://php.net/manual/ru/language.exceptions.php
 //еще phpdoc создать надо
 }
 

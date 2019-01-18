@@ -1,7 +1,12 @@
 <?php
 include 'switch.php';
 
-$control = new Control("/home/nata/Рабочий стол/Control"); //Директория с csv файлами
+try {
+    $control = new Control("/home/nata/Рабочий стол/Control"); //Директория с csv файлами
+} catch (Exception $e) {
+    echo 'Выброшено исключение: ',  $e->getMessage(), "\n";
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $control->switcher();
