@@ -9,7 +9,7 @@
 <body>
 
 <?php
-    if (!isset($errorMsg)):
+    if (isset($errorMsg)):
         echo $errorMsg;
     else:
 ?>
