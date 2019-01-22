@@ -7,6 +7,14 @@
 
 </head>
 <body>
+
+<?php
+    /*if (!isset($errorMsg)) {
+        echo $errorMsg;
+        exit;
+    }*/
+?>
+
     <table class="my">
         <tr class="my">
             <th>Start</th>
