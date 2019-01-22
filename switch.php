@@ -70,14 +70,14 @@ class Control
     {
 
         $day = date('d.m');
-
-        if (!is_dir($storagePath . '/' . $day)) {
-            mkdir($storagePath . '/' . $day);
-            chmod($storagePath . '/' . $day, 0777);
-        }
         $this->path = $storagePath . '/' . $day . '/';
-        if (!is_writable($storagePath . '/' . $day)) {
-            throw new Exception('Directory unavailable for writing: ' . $storagePath . '/' . $day);
+
+        if (!is_dir($this->path)) {
+            mkdir($this->path);
+            chmod($this->path, 0777);
+        }
+        if (!is_writable($this->path)) {
+            throw new Exception('Directory unavailable for writing: ' . $this->path);
         }
         $this->statusFile = $this->path . 'status.csv';
         $this->workFile = $this->path . 'work.csv';
@@ -98,6 +98,45 @@ class Control
         $this->status = explode(',', $this->status);
     }
 
+    //например сделать метод, который на вход будет принимать название файла и массив столбцов
+    //https://github.com/Nataliya48/script/blob/master/switch.php#L114
+    //https://i.imgur.com/M3TGTiv.png
+    //в одном условия и разные файлы
+    //а в другом ТОЛЬКО запись массива в файл
+
+    /*в одной функции ты опредялешь массив данных и название файла куда писать согласно условиям
+    а в другой ты тупо записываешь массив в файл
+    ну элементы массива через запятую*/
+
+    /**
+     * Формирование массива перед записью в файл
+     *
+     * @param $file в какой файл будет запись
+     * @param $type признак rest/work
+     * @param $time текущее время
+     * @return string
+     */
+    private function arrayFormationBeforeWriting($file, $time)
+    {
+        if ($file === $this->statusFile) {
+            return [$this->status[1], $time];
+        } else {
+            return [$this->status[0], $time, $this->timeDiff($time, $this->status[1])];
+        }
+    }
+
+
+    /**
+     * Запись в файл
+     *
+     * @param $file файл в который будет запись
+     * @param $array массив для записи в файл
+     */
+    private function writeToFile($file, $array, $flags = 0)
+    {
+        file_put_contents($file, implode(',', $array), $flags);
+    }
+
     /**
      * Переключатель
      */
@@ -107,21 +146,28 @@ class Control
 
         if (count($this->status) == 2) {
             if ($this->status[0] === self::WORK) {
+                //$this->writeToFile($this->workFile, $this->arrayFormationBeforeWriting($this->workFile, $time), FILE_APPEND);
                 file_put_contents($this->workFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+                //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $time));
                 file_put_contents($this->statusFile, self::REST . ',' . $time);
             } elseif ($this->status[0] === self::REST) {
                 if (($this->timeToSeconds(date('H:i:s')) - $this->timeToSeconds($this->status[1])) > 120) {
+                    //$this->writeToFile($this->restFile, $this->arrayFormationBeforeWriting($this->restFile, $time), FILE_APPEND);
                     file_put_contents($this->restFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+                    //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $time));
                     file_put_contents($this->statusFile, self::WORK . ',' . $time);
                 } else {
                     $workTotal = explode("\n", trim(file_get_contents($this->workFile)));
                     $start = explode(',', $workTotal[count($workTotal) - 1])[0];
                     unset($workTotal[count($workTotal) - 1]);
+                    //$this->writeToFile($this->workFile, implode("\n", $workTotal) . "\n");
                     file_put_contents($this->workFile, implode("\n", $workTotal) . "\n");
+                    //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $start));
                     file_put_contents($this->statusFile, self::WORK . ',' . $start);
                 }
             }
         } else {
+            //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $time));
             file_put_contents($this->statusFile, self::WORK . ',' . $time);
         }
         $this->loadStatus();
@@ -147,6 +193,9 @@ class Control
      */
     public function getWorkTotal()
     {
+        var_dump($this->arrayFormationBeforeWriting($this->statusFile, self::WORK, $this->status[1]));
+        var_dump($this->arrayFormationBeforeWriting($this->restFile, self::REST, $this->status[1]));
+        var_dump($this->arrayFormationBeforeWriting($this->workFile, self::WORK, $this->status[1]));
         return $this->getTotal($this->workFile, self::WORK);
     }
 
