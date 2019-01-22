@@ -9,10 +9,9 @@
 <body>
 
 <?php
-    /*if (!isset($errorMsg)) {
+    if (!isset($errorMsg)):
         echo $errorMsg;
-        exit;
-    }*/
+    else:
 ?>
 
     <table class="my">
@@ -66,3 +65,5 @@
     <input type="date" id="start" name="trip-start" value="">
 </body>
 </html>
+
+<?php endif; ?>
