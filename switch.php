@@ -116,14 +116,14 @@ class Control
      * @param $time текущее время
      * @return string
      */
-    private function arrayFormationBeforeWriting($file, $time)
+    /*private function arrayFormationBeforeWriting($file, $time)
     {
         if ($file === $this->statusFile) {
-            return [$this->status[1], $time];
+            return [$this->status[0], $time];
         } else {
-            return [$this->status[0], $time, $this->timeDiff($time, $this->status[1])];
+            return [$this->status[1], $time, $this->timeDiff($time, $this->status[1])];
         }
-    }
+    }*/
 
 
     /**
@@ -147,28 +147,38 @@ class Control
         if (count($this->status) == 2) {
             if ($this->status[0] === self::WORK) {
                 //$this->writeToFile($this->workFile, $this->arrayFormationBeforeWriting($this->workFile, $time), FILE_APPEND);
-                file_put_contents($this->workFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+                $this->writeToFile($this->workFile, [$this->status[1], $time, $this->timeDiff($time, $this->status[1])], FILE_APPEND);
+                //file_put_contents($this->workFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+
                 //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $time));
-                file_put_contents($this->statusFile, self::REST . ',' . $time);
+                $this->writeToFile($this->statusFile, [self::REST, $time]);
+                //file_put_contents($this->statusFile, self::REST . ',' . $time);
             } elseif ($this->status[0] === self::REST) {
                 if (($this->timeToSeconds(date('H:i:s')) - $this->timeToSeconds($this->status[1])) > 120) {
                     //$this->writeToFile($this->restFile, $this->arrayFormationBeforeWriting($this->restFile, $time), FILE_APPEND);
-                    file_put_contents($this->restFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+                    $this->writeToFile($this->restFile, [$this->status[1], $time, $this->timeDiff($time, $this->status[1])], FILE_APPEND);
+                    //file_put_contents($this->restFile, $this->status[1] . ',' . $time . ',' . $this->timeDiff($time, $this->status[1]) . "\n", FILE_APPEND);
+
                     //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $time));
-                    file_put_contents($this->statusFile, self::WORK . ',' . $time);
+                    $this->writeToFile($this->statusFile, [self::WORK, $time]);
+                    //file_put_contents($this->statusFile, self::WORK . ',' . $time);
                 } else {
                     $workTotal = explode("\n", trim(file_get_contents($this->workFile)));
                     $start = explode(',', $workTotal[count($workTotal) - 1])[0];
                     unset($workTotal[count($workTotal) - 1]);
                     //$this->writeToFile($this->workFile, implode("\n", $workTotal) . "\n");
-                    file_put_contents($this->workFile, implode("\n", $workTotal) . "\n");
+                    $this->writeToFile($this->workFile, [implode("\n", $workTotal)]);
+                    //file_put_contents($this->workFile, implode("\n", $workTotal) . "\n");
+
                     //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $start));
-                    file_put_contents($this->statusFile, self::WORK . ',' . $start);
+                    $this->writeToFile($this->statusFile, [self::WORK, $start]);
+                    //file_put_contents($this->statusFile, self::WORK . ',' . $start);
                 }
             }
         } else {
             //$this->writeToFile($this->statusFile, $this->arrayFormationBeforeWriting($this->statusFile, $time));
-            file_put_contents($this->statusFile, self::WORK . ',' . $time);
+            $this->writeToFile($this->statusFile, [self::WORK, $time]);
+            //file_put_contents($this->statusFile, self::WORK . ',' . $time);
         }
         $this->loadStatus();
 
